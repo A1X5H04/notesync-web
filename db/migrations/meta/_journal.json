@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1720245259705,
+      "tag": "0000_calm_vanisher",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1720245734684,
+      "tag": "0001_melted_eddie_brock",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1720809135187,
+      "tag": "0002_vengeful_invisible_woman",
+      "breakpoints": true
+    }
+  ]
+}
