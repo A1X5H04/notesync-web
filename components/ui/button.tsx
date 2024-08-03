@@ -41,8 +41,6 @@ export interface ButtonProps
   isLoading?: boolean;
 }
 
-console.log("buttonVariants", buttonVariants);
-
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -63,7 +61,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {isLoading ? <Loader2 className="animate-spin" size={24} /> : children}
+        {isLoading ? <Loader2 className="animate-spin" size={18} /> : children}
       </Comp>
     );
   }

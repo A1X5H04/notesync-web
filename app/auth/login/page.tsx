@@ -19,8 +19,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { login } from "@/actions/login";
+import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { oauthSignIn } from "@/actions/oauth";
+import { Separator } from "@/components/ui/separator";
 
 function LoginPage() {
+  const router = useRouter();
   const { toast } = useToast();
   const [pending, startTranstion] = useTransition();
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -34,19 +45,53 @@ function LoginPage() {
   const onFormSubmit = (values: z.infer<typeof loginSchema>) => {
     startTranstion(() => {
       login(values)
-        .then((res) => {})
-        .catch((err) => {});
+        .then((res) => {
+          toast({
+            title: res.status ? "Login Success" : "Failed to Login",
+            description: res.message,
+            variant: res.status ? "default" : "destructive",
+          });
+          router.replace("/workspace");
+        })
+        .catch((err) => {
+          console.error(err);
+          toast({
+            title: "Error",
+            description: "An error occurred",
+            variant: "destructive",
+          });
+        });
     });
   };
   return (
-    <div className="flex items-center justify-center py-12">
-      <div className="mx-auto grid w-[350px] gap-6">
-        <div className="grid text-center">
-          <h1 className="text-2xl font-bold">Welcome back!</h1>
-          <p className="text-balance text-muted-foreground">
-            Login to your account.
-          </p>
+    <Card className="min-w-96">
+      <CardHeader>
+        <CardTitle>Login </CardTitle>
+        <CardDescription>
+          Login to your account to access your workspace
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          <Button
+            variant="outline"
+            onClick={() => oauthSignIn("github")}
+            type="button"
+            className="w-full"
+          >
+            Sign up with Github
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => oauthSignIn("google")}
+            type="button"
+            className="w-full"
+          >
+            Sign up with Google
+          </Button>
         </div>
+
+        <Separator className="my-4" />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onFormSubmit)}>
             <div className="grid gap-4">
@@ -84,11 +129,13 @@ function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button isLoading={pending} type="submit" className="w-full">
+              <Button
+                isLoading={pending}
+                disabled={pending}
+                type="submit"
+                className="w-full"
+              >
                 Login
-              </Button>
-              <Button variant="outline" type="button" className="w-full">
-                Login with Google
               </Button>
             </div>
           </form>
@@ -96,12 +143,12 @@ function LoginPage() {
 
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?&nbsp;
-          <Link href="/auth/signup" className="font-semibold underline">
-            Sign up
+          <Link href="/auth/register" className="font-semibold underline">
+            Register
           </Link>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 

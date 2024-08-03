@@ -17,8 +17,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useTransition } from "react";
-import { signUp } from "@/actions/signup";
+import { register } from "@/actions/register";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { oauthSignIn } from "@/actions/oauth";
+import { Separator } from "@/components/ui/separator";
 
 function SignUpPage() {
   const { toast } = useToast();
@@ -26,36 +35,67 @@ function SignUpPage() {
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
+      username: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
   const onFormSubmit = (values: z.infer<typeof signUpSchema>) => {
     startTranstion(async () => {
-      const res = await signUp(values);
-      if (res.status) {
-        toast({
-          title: "Account Created",
-          description: res.message || "Account created successfully",
-        });
-      }
+      const res = await register(values);
+      toast({
+        title: res.status ? "Account Created" : "Failed to create account",
+        description: res.message || "Account created successfully",
+        variant: res.status ? "default" : "destructive",
+      });
     });
   };
 
   return (
-    <div className="flex items-center justify-center py-12">
-      <div className="mx-auto grid w-[350px] gap-6">
-        <div className="grid text-center">
-          <h1 className="text-2xl font-bold">Create an Account</h1>
-          <p className="text-balance text-muted-foreground">
-            Productivity starts here.
-          </p>
+    <Card className="min-w-96">
+      <CardHeader>
+        <CardTitle>Sign Up</CardTitle>
+        <CardDescription>Create an account to get started</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          <Button
+            variant="outline"
+            onClick={() => oauthSignIn("github")}
+            type="button"
+            className="w-full"
+          >
+            Sign up with Github
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => oauthSignIn("google")}
+            type="button"
+            className="w-full"
+          >
+            Sign up with Google
+          </Button>
         </div>
+
+        <Separator className="my-4" />
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onFormSubmit)}>
             <div className="grid gap-4">
+              <FormField
+                name="username"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="johndoe19" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 name="email"
                 control={form.control}
@@ -90,28 +130,9 @@ function SignUpPage() {
                   </FormItem>
                 )}
               />
-              <FormField
-                name="confirmPassword"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="password"
-                        placeholder="sameabovepassword"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
               <Button isLoading={pending} type="submit" className="w-full">
                 Sign Up
-              </Button>
-              <Button variant="outline" type="button" className="w-full">
-                Login with Google
               </Button>
             </div>
           </form>
@@ -122,8 +143,8 @@ function SignUpPage() {
             Login
           </Link>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 

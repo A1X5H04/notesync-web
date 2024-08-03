@@ -54,26 +54,7 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
 
   const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
   return (
-    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-screen">
-      {children}
-      <div className="hidden bg-muted lg:block relative">
-        <div className="absolute inset-0 flex flex-col items-start justify-center text-white p-10 space-y-14 bg-black/75">
-          <blockquote className="relative text-4xl font-light leading-snug tracking-wide">
-            {randomQuote.quote}
-          </blockquote>
-          <cite className="block text-muted-foreground font-bold">
-            - {randomQuote.author}
-          </cite>
-        </div>
-        <Image
-          src="/auth-bg.svg"
-          alt="Image"
-          width="1920"
-          height="1080"
-          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
-      </div>
-    </div>
+    <div className="w-full h-full grid place-items-center">{children}</div>
   );
 }
 
